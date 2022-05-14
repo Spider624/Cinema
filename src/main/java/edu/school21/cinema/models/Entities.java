@@ -12,7 +12,7 @@ public class Entities {
 	private long id;
 	private String name;
 
-	protected Entities{}
+//	protected Entities{}
 
 	public Entities(String name){
 		this.name = name;
