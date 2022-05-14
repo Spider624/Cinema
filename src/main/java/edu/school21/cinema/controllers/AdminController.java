@@ -28,4 +28,15 @@ public class AdminController {
 		adminService.createHall(dto);
 		return "redirect:/admin/panel/halls";
 	}
+
+	@GetMapping("films")
+	public  String getFilms(@ModelAttribute("model") ModelMap model) {
+		model.addAttribute("films", adminService.getFilms());
+		return "films";
+	}
+
+	@PostMapping("films")
+	public void addFilm(@ModelAttribute("model") ModelMap model){
+		model.put("films", adminService.addFilm());
+	}
 }
