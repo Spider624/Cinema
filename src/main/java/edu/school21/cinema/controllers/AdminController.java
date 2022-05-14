@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -19,5 +20,16 @@ public class AdminController {
 	public String getHalls(@ModelAttribute("model") ModelMap model) {
 		model.addAttribute("halls", adminService.getHalls());
 		return "halls";
+	}
+
+	@GetMapping("films")
+	public  String getFilms(@ModelAttribute("model") ModelMap model) {
+		model.addAttribute("films", adminService.getFilms());
+		return "films";
+	}
+
+	@PostMapping("films")
+	public void addFilm(@ModelAttribute("model") ModelMap model){
+		model.put("films", adminService.addFilm());
 	}
 }
