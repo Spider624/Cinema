@@ -1,5 +1,0 @@
-# Database connection
-jdbcUrl=jdbc:postgresql://localhost:5432/cinema
-dataSource.user=postgres
-dataSource.password=12345
-maximumPoolSize=20

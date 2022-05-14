@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface MessagesRepository {
+
 	List<Message> findAll();
 
-	@Transactional
-	void save(Message entity);
+	Message save(Message entity);
 }

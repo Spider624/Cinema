@@ -19,96 +19,95 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <java.version>1.8</java.version>
-        <hibernate-version>5.0.1.Final</hibernate-version>
-        <jsp.version>2.2.1-b03</jsp.version>
+        <hibernate-version>5.6.5.Final</hibernate-version>
         <servlet.version>4.0.1</servlet.version>
         <jpa.version>2.6.4</jpa.version>
-
-
     </properties>
 
-       <dependencies>
-
-           <!-- Spring MVC -->
+    <dependencies>
+        <!-- Spring MVC -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>5.3.16</version>
+            <version>5.3.20</version>
         </dependency>
-
-       <dependency>
-           <groupId>org.springframework</groupId>
-           <artifactId>spring-web</artifactId>
-           <version>5.3.19</version>
-       </dependency>
-
-
-
-        <!-- Other Servlet Web dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.20</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <!--suppress MavenModelInspection -->
-            <version>5.3.18</version>
+            <version>5.3.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>5.3.20</version>
         </dependency>
 
-
-        <!--driver for connection to MYSql database -->
+        <!-- Database connection -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
+        </dependency>
 
-        <!-- Hibernate -->
-        <!-- to start need only this -->
+        <!-- Spring Jpa (Hibernate) -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-jpa</artifactId>
+            <version>${jpa.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate-version}</version>
         </dependency>
-
-        <!-- for JPA, use hibernate-entitymanager instead of hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate-version}</version>
         </dependency>
 
-       <!-- for JPA from spring.io -->
-       <dependency>
-           <groupId>org.springframework.data</groupId>
-           <artifactId>spring-data-jpa</artifactId>
-           <version>${jpa.version}</version>
-       </dependency>
+        <!-- Servlets API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 
-       <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->
-       <dependency>
-           <groupId>org.freemarker</groupId>
-           <artifactId>freemarker</artifactId>
-           <version>2.3.31</version>
-       </dependency>
+        <!-- View -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.31</version>
+        </dependency>
 
-       <dependency>
-           <groupId>javax.servlet</groupId>
-           <artifactId>javax.servlet-api</artifactId>
-           <version>4.0.1</version>
-           <scope>provided</scope>
-       </dependency>
-           <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-api</artifactId>
-               <version>2.0.0-alpha7</version>
-           </dependency>
-           <dependency>
-               <groupId>org.slf4j</groupId>
-               <artifactId>slf4j-simple</artifactId>
-               <version>2.0.0-alpha7</version>
-           </dependency>
-
-
-
-       </dependencies>
+        <!-- Tools -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.0-alpha7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.0-alpha7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.22</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <finalName>cinema</finalName>
@@ -146,9 +145,13 @@
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
                     <version>2.2</version>
+                    <configuration>
+                        <server>tomcat7</server>
+                        <path>/</path>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-          </project>
+</project>
