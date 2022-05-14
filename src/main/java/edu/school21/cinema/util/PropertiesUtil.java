@@ -1,6 +1,6 @@
 package edu.school21.cinema.util;
 
-import edu.school21.cinema.exceptions.FwaRuntimeException;
+import edu.school21.cinema.exceptions.CinemaRuntimeException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,7 @@ public class PropertiesUtil {
 		try	(FileInputStream fis = new FileInputStream("src/main/webapp/WEB-INF/application.properties")) {
 			PROPERTIES.load(fis);
 		} catch (IOException e) {
-			throw new FwaRuntimeException(e);
+			throw new CinemaRuntimeException(e);
 		}
 	}
 

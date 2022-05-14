@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @MappedSuperclass
-public class AbstractModel {
+public abstract class AbstractModel {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

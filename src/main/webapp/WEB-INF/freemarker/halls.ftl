@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Welcome!</title>
+    <title>Halls</title>
 </head>
 
 <style>
@@ -11,15 +11,15 @@
 </style>
 
 <body>
-<h1>Welcome John Doe!</h1>
+<h1>Movie halls page!</h1>
 
 <table class="datatable">
     <tr>
-        <th>Id</th>  <th>Uuid</th> <th>Message</th>
+        <th>Id</th>  <th>Uuid</th> <th>Seats number</th>
     </tr>
-    <#list model["messages"] as message>
+    <#list model["halls"] as hall>
         <tr>
-            <td>${message.id}</td> <td>${message.uuid}</td> <td>${message.message}</td>
+            <td>${hall.id}</td> <td>${hall.uuid}</td> <td>${hall.seatsCount}</td>
         </tr>
     </#list>
 </table>
