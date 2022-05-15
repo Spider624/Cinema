@@ -15,11 +15,19 @@ public class FilmRepositoryEntityManagerImpl implements FilmRepository {
 
 	@Override
 	public List<Film> findAll(){
-		return entityManager.createQuery("from Film", Film.class).getResultList();
+		return entityManager.createQuery("SELECT film FROM Film film ORDER BY film.id", Film.class).getResultList();
 	}
+
 	@Override
 	public Film save(Film entity) {
 		entityManager.persist(entity);
 		return entity;
+	}
+
+	@Override
+	public Film findFilmById(Long id) {
+		return entityManager.createQuery("SELECT film FROM Film film WHERE film.id =: id", Film.class)
+				.setParameter("id", id)
+				.getSingleResult();
 	}
 }

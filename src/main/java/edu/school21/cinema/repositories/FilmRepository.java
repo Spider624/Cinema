@@ -8,8 +8,6 @@ import java.util.List;
 public interface FilmRepository {
 
 	List<Film> findAll();
-
 	Film save(Film entity);
-
-
+	Film findFilmById(Long id);
 }

@@ -8,8 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/admin/panel")
@@ -25,7 +32,7 @@ public class AdminController {
 	}
 
 	@PostMapping("halls")
-	public String createHall(HallInDto dto, @ModelAttribute("model") ModelMap model) {
+	public String createHall(HallInDto dto) {
 		adminService.createHall(dto);
 		return "redirect:/admin/panel/halls";
 	}
@@ -37,8 +44,20 @@ public class AdminController {
 	}
 
 	@PostMapping("films")
-	public String createFilm(FilmInDto dto, @ModelAttribute("model") ModelMap model) {
+	public String createFilm(FilmInDto dto) {
 		adminService.createFilm(dto);
 		return  "redirect:/admin/panel/films";
+	}
+
+	@ResponseBody
+	@GetMapping("film/{filmId}/poster")
+	public void getFilmPoster(@PathVariable long filmId, HttpServletRequest request, HttpServletResponse response) {
+		adminService.getFilmPoster(filmId, request, response);
+	}
+
+	@PostMapping("film/{filmId}/poster")
+	public String uploadFilmPoster(@PathVariable long filmId, @RequestParam("image") MultipartFile image) {
+		adminService.uploadFilmPoster(filmId, image);
+		return "redirect:/admin/panel/films";
 	}
 }

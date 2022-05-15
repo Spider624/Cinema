@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html>
+<script>
+    function triggerInput(filmId) {
+        document.getElementById('inputFile' + filmId).click();
+    }
+    function inputImage(event, filmId) {
+        if (event.target.files[0]) {
+            document.getElementById("uploadbtn" + filmId).click();
+        }
+    }
+</script>
 <head>
     <title>Films</title>
 </head>
@@ -9,11 +19,11 @@
         font-family: Verdana, sans-serif;
     }
     .container {
-        width: 800px;
+        width: calc(100% - 100px);
         height: 100%;
         display: flex;
         flex-direction: column;
-        margin: 50px auto;
+        margin: 50px;
     }
 
     .container-content {
@@ -23,7 +33,7 @@
         justify-content: center;
     }
 
-    .add-hall-form {
+    .add-film-form {
         width: 250px;
         margin-right: 50px;
         display: flex;
@@ -39,6 +49,19 @@
         background: #f1f1f1;
     }
     input[type=text]:focus, input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+    textarea {
+        width: calc(100% - 10px);
+        resize: none;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+    textarea:focus {
         background-color: #ddd;
         outline: none;
     }
@@ -61,7 +84,7 @@
         cursor: pointer;
     }
 
-    .halls-list {
+    .films-list {
         width: calc(100% - 300px);
         display: flex;
         flex-direction: column;
@@ -100,17 +123,14 @@
     <div class="container-content">
         <div class="add-film-form">
             <form action="/admin/panel/films" method="post">
-                <label for="title"><b style="font-size: 10pt">titles</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter title" name="title" id="title" required>
-                <label for="yearOfRelease"><b style="font-size: 10pt">year of Release</b></label>
-                <input autocomplete="false" type="text" min="0" placeholder="Enter count" name="yearOfRelease" id="yearOfRelease" required>
-                <label for="ageRestrictions"><b style="font-size: 10pt">age Restrictions</b></label>
-                <input autocomplete="false" type="text" min="1" placeholder="Enter age Restrictions" name="ageRestrictions" id="ageRestrictions" required>
-                <label for="description"><b style="font-size: 10pt">description</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter description" name="description" id="description" required>
-                <label for="imageUUID"><b style="font-size: 10pt">imageUUID</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter imageUUID" name="imageUUID" id="imageUUID">
-
+                <label for="title"><b style="font-size: 10pt">Title</b></label>
+                <input autocomplete="false" type="text" placeholder="Enter title" name="title" id="title" maxlength="100" required>
+                <label for="yearOfRelease"><b style="font-size: 10pt">Year of release</b></label>
+                <input autocomplete="false" type="text" min="0" placeholder="Enter year" name="yearOfRelease" id="yearOfRelease" required>
+                <label for="ageRestrictions"><b style="font-size: 10pt">Age restriction</b></label>
+                <input autocomplete="false" type="text" min="1" placeholder="Enter age" name="ageRestrictions" id="ageRestrictions" required>
+                <label for="description"><b style="font-size: 10pt">Description</b></label>
+                <textarea autocomplete="false" placeholder="Enter description" name="description" id="description" maxlength="1000" rows="3"></textarea>
 
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
             </form>
@@ -119,21 +139,37 @@
             <table>
                 <tr>
                     <th>ID</th>
-                    <th>title</th>
-                    <th>yearOfRelease</th>
-                    <th>ageRestrictions</th>
-                    <th>description</th>
-                    <th>image</th>
-<#--                    <th>image <img src="..."></th>-->
+                    <th>Title</th>
+                    <th>Poster</th>
+                    <th>Description</th>
+                    <th>Release</th>
+                    <th>Age restriction</th>
                 </tr>
                 <#list model["films"] as film>
                     <tr>
                         <td>${film.id}</td>
                         <td>${film.title}</td>
-                        <td>${film.yearOfRelease}</td>
-                        <td>${film.ageRestrictions}</td>
+                        <td>
+                            <img style="width: 50px; height: 50px; cursor: pointer" src="${film.posterUrl}" onclick="triggerInput(${film.id})">
+                            <form class="upload-form"
+                                  action="/admin/panel/film/${film.id}/poster"
+                                  method="POST"
+                                  enctype="multipart/form-data">
+                                <input id="inputFile${film.id}"
+                                       style="display: none"
+                                       type="file"
+                                       name="image"
+                                       onchange="inputImage(event, ${film.id})"
+                                       accept="image/*">
+                                <input id="uploadbtn${film.id}"
+                                       style="display: none"
+                                       type="submit"
+                                       value="Submit">
+                            </form>
+                        </td>
                         <td>${film.description}</td>
-                        <td>${film.imageUUID}</td>
+                        <td>${film.yearOfRelease}</td>
+                        <td>${film.ageRestrictions}+</td>
                     </tr>
                 </#list>
             </table>
