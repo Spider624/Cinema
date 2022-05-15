@@ -107,9 +107,9 @@
                 <label for="ageRestrictions"><b style="font-size: 10pt">age Restrictions</b></label>
                 <input autocomplete="false" type="text" min="1" placeholder="Enter age Restrictions" name="ageRestrictions" id="ageRestrictions" required>
                 <label for="description"><b style="font-size: 10pt">description</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter description" name="description" id="description" required>
-                <label for="imageUUID"><b style="font-size: 10pt">imageUUID</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter imageUUID" name="imageUUID" id="imageUUID">
+                <input autocomplete="false" type="text" placeholder="Enter description" name="description" id="description">
+<#--                <label for="imageUUID"><b style="font-size: 10pt">imageUUID</b></label>-->
+<#--                <input autocomplete="false" type="text" placeholder="Enter imageUUID" name="imageUUID" id="imageUUID">-->
 
 
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
@@ -133,7 +133,7 @@
                         <td>${film.yearOfRelease}</td>
                         <td>${film.ageRestrictions}</td>
                         <td>${film.description}</td>
-                        <td>${film.imageUUID}</td>
+<#--                        <td>${film.imageUUID}</td>-->
                     </tr>
                 </#list>
             </table>
