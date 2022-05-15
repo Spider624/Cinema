@@ -1,5 +1,6 @@
 package edu.school21.cinema.controllers;
 
+import edu.school21.cinema.dto.FilmInDto;
 import edu.school21.cinema.dto.HallInDto;
 import edu.school21.cinema.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class AdminController {
 	}
 
 	@PostMapping("films")
-	public void addFilm(@ModelAttribute("model") ModelMap model){
-		model.put("films", adminService.addFilm());
+	public String createFilm(FilmInDto dto, @ModelAttribute("model") ModelMap model) {
+		adminService.createFilm(dto);
+		return  "redirect:/admin/panel/films";
 	}
 }

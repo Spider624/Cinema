@@ -1,5 +1,7 @@
 package edu.school21.cinema.services;
 
+import edu.school21.cinema.dto.FilmInDto;
+import edu.school21.cinema.dto.FilmOutDto;
 import edu.school21.cinema.dto.HallInDto;
 import edu.school21.cinema.dto.HallOutDto;
 import edu.school21.cinema.models.Film;
@@ -39,23 +41,20 @@ public class AdminService {
 	private FilmRepository filmRepository;
 
 	@Transactional
-	public List<Film> getFilms() {
-		Film film = new Film();
-		film.getTitle();
-		film.getYearOfRelease();
-		film.getAgeRestrictions();
-		if (film.getDescription() != null)
-			film.getDescription();
-		if (film.getImageUUID() != null)
-			film.getImageUUID();
-		filmRepository.save(film);
-
-		return filmRepository.findAll();
-
+	public List<FilmOutDto> getFilms() {
+		return filmRepository.findAll().stream()
+				.map(FilmOutDto::new)
+				.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public List<Film> addFilm() {
-		return null;
+	public void createFilm(FilmInDto dto){
+		Film film = new Film();
+		film.setTitle(dto.getTitle());
+		film.setYearOfRelease(dto.getYearOfRelease());
+		film.setAgeRestrictions(dto.getAgeRestrictions());
+		film.setDescription(dto.getDescription());
+		film.setImageUUID(dto.getImageUUID());
+		filmRepository.save(film);
 	}
 }
