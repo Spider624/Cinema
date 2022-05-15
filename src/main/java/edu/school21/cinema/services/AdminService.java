@@ -54,9 +54,13 @@ public class AdminService {
 		film.setYearOfRelease(dto.getYearOfRelease());
 		film.setAgeRestrictions(dto.getAgeRestrictions());
 		film.setDescription(dto.getDescription());
-		film.setImageUUID(dto.getImageUUID());
+		//film.setImageUUID(dto.getImageUUID());
 		filmRepository.save(film);
 	}
+
+
+//	@Transactional
+//	public void addFilmPoster(Film)
 
 
 }

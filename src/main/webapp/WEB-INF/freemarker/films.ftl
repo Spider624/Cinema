@@ -110,6 +110,9 @@
                 <input autocomplete="false" type="text" placeholder="Enter description" name="description" id="description">
 <#--                <label for="imageUUID"><b style="font-size: 10pt">imageUUID</b></label>-->
 <#--                <input autocomplete="false" type="text" placeholder="Enter imageUUID" name="imageUUID" id="imageUUID">-->
+                <label path="file"><b style="font-size: 10pt">Select a file to upload</b></label>
+                <input type="file" name="file" />
+
 
 
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
@@ -133,7 +136,9 @@
                         <td>${film.yearOfRelease}</td>
                         <td>${film.ageRestrictions}</td>
                         <td>${film.description}</td>
-<#--                        <td>${film.imageUUID}</td>-->
+<#--                        <td><#if film.imageUUID??>-->
+<#--                                <img class="card-img-top" src="img/${film.imageUUID}" alt="Card image cap" style="width:100%">-->
+<#--                            </#if>${film.imageUUID}</td>-->
                     </tr>
                 </#list>
             </table>

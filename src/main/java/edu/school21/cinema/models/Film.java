@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.File;
 import java.util.UUID;
 
 @Setter
@@ -24,5 +25,7 @@ public class Film extends AbstractModel{
 	private String description;
 	@Column(nullable = true)
 	private UUID imageUUID;
+	@Column
+	private File fileImage;
 
 }

@@ -6,12 +6,17 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FilmRepositoryEntityManagerImpl implements FilmRepository {
 
 	@PersistenceContext
 	private EntityManager entityManager;
+
+//	public static Optional<Film> findByFilename(String name) {
+//
+//	}
 
 	@Override
 	public List<Film> findAll(){
@@ -22,4 +27,5 @@ public class FilmRepositoryEntityManagerImpl implements FilmRepository {
 		entityManager.persist(entity);
 		return entity;
 	}
+
 }
