@@ -17,4 +17,6 @@ public class FilmInDto {
 	/** Описание */
 	@Nullable
 	String description;
+	/** Длительность */
+	Integer duration;
 }

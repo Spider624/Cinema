@@ -7,13 +7,15 @@
     body {
         height: 100vh;
         font-family: Verdana, sans-serif;
+        margin: 0;
     }
     .container {
-        width: 800px;
-        height: 100%;
+        width: 1200px;
+        height: calc(100% - 100px);
         display: flex;
         flex-direction: column;
-        margin: 50px auto;
+        margin: 0 auto;
+        padding: 50px 0;
     }
 
     .container-content {
@@ -54,7 +56,7 @@
         width: 100%;
         height: 35px;
         opacity: 0.9;
-        font-size: 12pt;
+        font-size: 10pt;
     }
     .createbtn:hover {
         opacity:1;
@@ -68,9 +70,15 @@
     }
     .container-label {
         color: #5237d5;
-        margin: 2px;
+        padding: 5px 10px;
+        margin: 0;
         font-size: 13pt;
         text-align: left;
+        cursor: pointer;
+    }
+    .current-container-label {
+        color: #ffffff;
+        background-color: #5237d5;
     }
     table {
         font-size: 10pt;
@@ -92,16 +100,24 @@
     th {
         background-color: #dddddd;
     }
+    a {
+        text-decoration: none;
+    }
 </style>
 <body>
 <div class="container">
-    <p class="container-label">Movie halls</p>
+    <div style="display: flex; flex-direction: row" class="container-head">
+        <a href="/admin/panel/halls" class="container-label current-container-label">Halls</a>
+        <a href="/admin/panel/films" class="container-label">Movies</a>
+        <a href="/admin/panel/sessions" class="container-label">Sessions</a>
+    </div>
     <hr>
     <div class="container-content">
         <div class="add-hall-form">
             <form action="/admin/panel/halls" method="post">
                 <label for="seatsCount"><b style="font-size: 10pt">Seats count</b></label>
-                <input autocomplete="false" type="text" min="1" placeholder="Enter count" name="seatsCount" id="seatsCount" required>
+                <input autocomplete="off" type="text" min="1" placeholder="Enter count" name="seatsCount" id="seatsCount" required>
+
                 <button type="submit" class="createbtn" value="/admin/panel/halls">Create hall</button>
             </form>
         </div>
@@ -110,13 +126,11 @@
                 <tr>
                     <th>ID</th>
                     <th>Seats count</th>
-                    <th>Vacant</th>
                 </tr>
                 <#list model["halls"] as hall>
                     <tr>
                         <td>${hall.id}</td>
                         <td>${hall.seatsCount}</td>
-                        <td>${hall.vacant?string("yes", "no")}</td>
                     </tr>
                 </#list>
             </table>

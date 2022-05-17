@@ -1,6 +1,7 @@
 package edu.school21.cinema.controllers;
 
 import edu.school21.cinema.dto.FilmInDto;
+import edu.school21.cinema.dto.FilmSessionInDto;
 import edu.school21.cinema.dto.HallInDto;
 import edu.school21.cinema.services.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,19 @@ public class AdminController {
 	public String uploadFilmPoster(@PathVariable long filmId, @RequestParam("image") MultipartFile image) {
 		adminService.uploadFilmPoster(filmId, image);
 		return "redirect:/admin/panel/films";
+	}
+
+	@GetMapping("sessions")
+	public String getSessions(@ModelAttribute("model") ModelMap model) {
+		model.addAttribute("sessions", adminService.getSessions());
+		model.addAttribute("films", adminService.getFilms());
+		model.addAttribute("halls", adminService.getHalls());
+		return "sessions";
+	}
+
+	@PostMapping("sessions")
+	public String createSession(FilmSessionInDto dto) {
+		adminService.createSession(dto);
+		return  "redirect:/admin/panel/sessions";
 	}
 }

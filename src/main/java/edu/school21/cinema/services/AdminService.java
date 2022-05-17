@@ -2,16 +2,22 @@ package edu.school21.cinema.services;
 
 import edu.school21.cinema.dto.FilmInDto;
 import edu.school21.cinema.dto.FilmOutDto;
+import edu.school21.cinema.dto.FilmSessionInDto;
+import edu.school21.cinema.dto.FilmSessionOutDto;
 import edu.school21.cinema.dto.HallInDto;
 import edu.school21.cinema.dto.HallOutDto;
+import edu.school21.cinema.exceptions.CinemaRuntimeException;
 import edu.school21.cinema.models.FileInfo;
 import edu.school21.cinema.models.Film;
+import edu.school21.cinema.models.FilmSession;
 import edu.school21.cinema.models.Hall;
 import edu.school21.cinema.repositories.FilmRepository;
+import edu.school21.cinema.repositories.FilmSessionRepository;
 import edu.school21.cinema.repositories.HallRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MimeTypeUtils;
@@ -20,8 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +39,7 @@ public class AdminService {
 
 	private final static FileInfo DEFAULT_POSTER;
 	private final static String UPLOAD_PATH = "src/main/resources/files/posters/";
+	private final static Integer ADDITIONAL_DURATION = 60;
 
 	static {
 		DEFAULT_POSTER = new FileInfo();
@@ -42,6 +51,8 @@ public class AdminService {
 	private HallRepository hallRepository;
 	@Autowired
 	private FilmRepository filmRepository;
+	@Autowired
+	private FilmSessionRepository filmSessionRepository;
 
 	@Transactional(readOnly = true)
 	public List<HallOutDto> getHalls() {
@@ -71,15 +82,15 @@ public class AdminService {
 		film.setYearOfRelease(dto.getYearOfRelease());
 		film.setAgeRestrictions(dto.getAgeRestrictions());
 		film.setDescription(dto.getDescription());
+		film.setDuration(dto.getDuration());
 		filmRepository.save(film);
 	}
 
 	@Transactional(readOnly = true)
 	public void getFilmPoster(Long filmId, HttpServletRequest request, HttpServletResponse response) {
-		Film film = filmRepository.findFilmById(filmId);
+		Film film = filmRepository.findById(filmId);
 		if (film == null) {
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			return;
+			throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
 		}
 
 		FileInfo fileInfo;
@@ -99,17 +110,18 @@ public class AdminService {
 
 			IOUtils.copy(fis, response.getOutputStream());
 		}
-		catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace();
+		catch (FileNotFoundException e) {
+			throw new CinemaRuntimeException("Image not found", HttpStatus.NOT_FOUND.value(), e);
+		} catch (IOException e) {
+			throw new CinemaRuntimeException("Error during image reading", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
 		}
 	}
 
 	@Transactional
 	public void uploadFilmPoster(long filmId, MultipartFile image) {
-		Film film = filmRepository.findFilmById(filmId);
+		Film film = filmRepository.findById(filmId);
 		if (film == null) {
-			return;
+			throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
 		}
 
 		try (FileOutputStream fos = new FileOutputStream(UPLOAD_PATH + filmId)) {
@@ -127,7 +139,55 @@ public class AdminService {
 			filmRepository.save(film);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CinemaRuntimeException("Error during image upload", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+		}
+	}
+
+	@Transactional
+	public void createSession(FilmSessionInDto dto) {
+		Film film = filmRepository.findById(dto.getFilmId());
+		if (film == null) {
+			throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
+		}
+
+		Hall hall = hallRepository.findById(dto.getHallId());
+		if (hall == null) {
+			throw new CinemaRuntimeException("Hall not found", HttpStatus.NOT_FOUND.value());
+		}
+
+		LocalDateTime sessionDateTimeFrom = dto.getSessionDateTime();
+		LocalDateTime sessionDateTimTo = sessionDateTimeFrom.plusMinutes(film.getDuration() + ADDITIONAL_DURATION);
+		assertSessionTime(sessionDateTimeFrom, sessionDateTimTo, hall);
+
+		FilmSession filmSession = new FilmSession();
+		filmSession.setFilm(film);
+		filmSession.setHall(hall);
+		filmSession.setTicketCost(dto.getTicketCost());
+		filmSession.setSessionDateTimeFrom(sessionDateTimeFrom);
+		filmSession.setSessionDateTimeTo(sessionDateTimTo);
+		filmSessionRepository.save(filmSession);
+	}
+
+	@Transactional(readOnly = true)
+	public List<FilmSessionOutDto> getSessions() {
+		return filmSessionRepository.findAll().stream()
+				.map(FilmSessionOutDto::new)
+				.collect(Collectors.toList());
+	}
+
+
+	private void assertSessionTime(LocalDateTime sessionDateTimeFrom, LocalDateTime sessionDateTimTo, Hall hall) {
+		List<FilmSession> filmSessions = filmSessionRepository.findAllByHall(hall);
+
+		for (FilmSession session : filmSessions) {
+			LocalDateTime from = session.getSessionDateTimeFrom();
+			LocalDateTime to = session.getSessionDateTimeTo();
+
+			if (sessionDateTimTo.isAfter(from) || sessionDateTimeFrom.isBefore(to)) {
+				throw new CinemaRuntimeException(String.format("Hall already busy by '%s'",
+						session.getFilm().getTitle()),
+						HttpStatus.BAD_REQUEST.value());
+			}
 		}
 	}
 }

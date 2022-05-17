@@ -25,7 +25,7 @@ public class FilmRepositoryEntityManagerImpl implements FilmRepository {
 	}
 
 	@Override
-	public Film findFilmById(Long id) {
+	public Film findById(Long id) {
 		return entityManager.createQuery("SELECT film FROM Film film WHERE film.id =: id", Film.class)
 				.setParameter("id", id)
 				.getSingleResult();

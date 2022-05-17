@@ -23,4 +23,11 @@ public class HallRepositoryEntityManagerImpl implements HallRepository {
 		entityManager.persist(entity);
 		return entity;
 	}
+
+	@Override
+	public Hall findById(Long id) {
+		return entityManager.createQuery("SELECT hall FROM Hall hall WHERE hall.id =: id", Hall.class)
+				.setParameter("id", id)
+				.getSingleResult();
+	}
 }
