@@ -2,22 +2,19 @@ package edu.school21.cinema.exceptions;
 
 public class CinemaRuntimeException extends RuntimeException {
 
-	public CinemaRuntimeException() {
-	}
+	private final Integer statusCode;
 
-	public CinemaRuntimeException(String message) {
+	public CinemaRuntimeException(String message, Integer statusCode) {
 		super(message);
+		this.statusCode = statusCode;
 	}
 
-	public CinemaRuntimeException(String message, Throwable cause) {
+	public CinemaRuntimeException(String message, Integer statusCode, Throwable cause) {
 		super(message, cause);
+		this.statusCode = statusCode;
 	}
 
-	public CinemaRuntimeException(Throwable cause) {
-		super(cause);
-	}
-
-	public CinemaRuntimeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
+	public Integer getStatusCode() {
+		return statusCode;
 	}
 }

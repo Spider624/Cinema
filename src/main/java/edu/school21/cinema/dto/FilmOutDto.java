@@ -21,6 +21,8 @@ public class FilmOutDto {
 	/** Описание */
 	@Nullable
 	String description;
+	/** Длительность */
+	Integer duration;
 	/** Ссылка на постер */
 	String posterUrl;
 
@@ -30,6 +32,7 @@ public class FilmOutDto {
 		this.yearOfRelease = film.getYearOfRelease();
 		this.ageRestrictions = film.getAgeRestrictions();
 		this.description = film.getDescription();
+		this.duration = film.getDuration();
 		this.posterUrl = String.format("/admin/panel/film/%d/poster", film.getId());
 	}
 }

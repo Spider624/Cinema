@@ -39,6 +39,10 @@ public class Film extends AbstractModel{
 	@Column(length = DESCRIPTION_LENGTH)
 	private String description;
 
+	/** Длительность в минутах */
+	@Column(nullable = false)
+	private Integer duration;
+
 	/** Постер фильма */
 	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

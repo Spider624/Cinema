@@ -11,19 +11,21 @@
     }
 </script>
 <head>
-    <title>Films</title>
+    <title>Movies</title>
 </head>
 <style>
     body {
         height: 100vh;
         font-family: Verdana, sans-serif;
+        margin: 0;
     }
     .container {
-        width: calc(100% - 100px);
-        height: 100%;
+        width: 1200px;
+        height: calc(100% - 100px);
         display: flex;
         flex-direction: column;
-        margin: 50px;
+        margin: 0 auto;
+        padding: 50px 0;
     }
 
     .container-content {
@@ -33,7 +35,7 @@
         justify-content: center;
     }
 
-    .add-film-form {
+    .add-session-form {
         width: 250px;
         margin-right: 50px;
         display: flex;
@@ -77,23 +79,29 @@
         width: 100%;
         height: 35px;
         opacity: 0.9;
-        font-size: 12pt;
+        font-size: 10pt;
     }
     .createbtn:hover {
         opacity:1;
         cursor: pointer;
     }
 
-    .films-list {
+    .sessions-list {
         width: calc(100% - 300px);
         display: flex;
         flex-direction: column;
     }
     .container-label {
         color: #5237d5;
-        margin: 2px;
+        padding: 5px 10px;
+        margin: 0;
         font-size: 13pt;
         text-align: left;
+        cursor: pointer;
+    }
+    .current-container-label {
+        color: #ffffff;
+        background-color: #5237d5;
     }
     table {
         font-size: 10pt;
@@ -115,33 +123,43 @@
     th {
         background-color: #dddddd;
     }
+    a {
+        text-decoration: none;
+    }
 </style>
 <body>
 <div class="container">
-    <p class="container-label">Movies</p>
+    <div style="display: flex; flex-direction: row" class="container-head">
+        <a href="/admin/panel/halls" class="container-label">Halls</a>
+        <a href="/admin/panel/films" class="container-label current-container-label">Movies</a>
+        <a href="/admin/panel/sessions" class="container-label">Sessions</a>
+    </div>
     <hr>
     <div class="container-content">
-        <div class="add-film-form">
+        <div class="add-session-form">
             <form action="/admin/panel/films" method="post">
                 <label for="title"><b style="font-size: 10pt">Title</b></label>
-                <input autocomplete="false" type="text" placeholder="Enter title" name="title" id="title" maxlength="100" required>
-                <label for="yearOfRelease"><b style="font-size: 10pt">Year of release</b></label>
-                <input autocomplete="false" type="text" min="0" placeholder="Enter year" name="yearOfRelease" id="yearOfRelease" required>
-                <label for="ageRestrictions"><b style="font-size: 10pt">Age restriction</b></label>
-                <input autocomplete="false" type="text" min="1" placeholder="Enter age" name="ageRestrictions" id="ageRestrictions" required>
+                <input autocomplete="off" type="text" placeholder="Enter title" name="title" id="title" maxlength="100" required>
                 <label for="description"><b style="font-size: 10pt">Description</b></label>
-                <textarea autocomplete="false" placeholder="Enter description" name="description" id="description" maxlength="1000" rows="3"></textarea>
+                <textarea autocomplete="off" placeholder="Enter description" name="description" id="description" maxlength="1000" rows="3"></textarea>
+                <label for="duration"><b style="font-size: 10pt">Duration, min</b></label>
+                <input autocomplete="off" type="text" placeholder="Enter duration" name="duration" id="duration" required>
+                <label for="yearOfRelease"><b style="font-size: 10pt">Year of release</b></label>
+                <input autocomplete="off" type="text" min="0" placeholder="Enter year" name="yearOfRelease" id="yearOfRelease" required>
+                <label for="ageRestrictions"><b style="font-size: 10pt">Age restriction</b></label>
+                <input autocomplete="off" type="text" min="1" placeholder="Enter age" name="ageRestrictions" id="ageRestrictions" required>
 
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
             </form>
         </div>
-        <div class="films-list">
+        <div class="sessions-list">
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Title</th>
                     <th>Poster</th>
                     <th>Description</th>
+                    <th>Duration</th>
                     <th>Release</th>
                     <th>Age restriction</th>
                 </tr>
@@ -168,6 +186,7 @@
                             </form>
                         </td>
                         <td>${film.description}</td>
+                        <td>${film.duration}</td>
                         <td>${film.yearOfRelease}</td>
                         <td>${film.ageRestrictions}+</td>
                     </tr>

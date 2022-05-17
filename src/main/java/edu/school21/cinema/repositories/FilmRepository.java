@@ -9,5 +9,5 @@ public interface FilmRepository {
 
 	List<Film> findAll();
 	Film save(Film entity);
-	Film findFilmById(Long id);
+	Film findById(Long id);
 }

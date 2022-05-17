@@ -3,6 +3,7 @@ package edu.school21.cinema.util;
 import edu.school21.cinema.exceptions.CinemaRuntimeException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class PropertiesUtil {
 		try	(FileInputStream fis = new FileInputStream("src/main/webapp/WEB-INF/application.properties")) {
 			PROPERTIES.load(fis);
 		} catch (IOException e) {
-			throw new CinemaRuntimeException(e);
+			throw new CinemaRuntimeException("Error during properties read", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
 		}
 	}
 
