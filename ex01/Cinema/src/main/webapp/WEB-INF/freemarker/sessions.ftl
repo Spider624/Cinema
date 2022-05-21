@@ -1,11 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Movie sessions</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        var prevValue = ''
+
+        var tableHeader = "<th>ID</th>" +
+            "<th>Hall</th>" +
+            "<th>Movie</th>" +
+            "<th>Session date, from</th>" +
+            "<th>Session date, to</th>" +
+            "<th>Ticket cost, RUB</th>"
+
+        function search(title) {
+            $.get("/admin/panel/sessions/search?filmName=" + title, function (data) {
+                console.log(title);
+                reDrawTable(data);
+            });
+        }
+
+        function onClick() {
+            search(document.getElementById('search').value);
+        }
+
+        function reDrawTable(sessions) {
+            table = document.getElementById('sessions-table');
+            $("#sessions-table tr").remove();
+
+            if (sessions.length > 0) {
+                var headerTr = table.insertRow(-1);
+                headerTr.innerHTML = tableHeader;
+
+                for (let i = 1; i < sessions.length + 1; ++i) {
+                    var session = sessions[i - 1];
+                    var rowTr = table.insertRow(i);
+
+                    var idTd = rowTr.insertCell(0);
+                    idTd.innerHTML = session.id;
+
+                    var hallTd = rowTr.insertCell(1);
+                    hallTd.innerHTML = session.hall.id;
+
+                    var movieTd = rowTr.insertCell(2);
+                    movieTd.innerHTML = '<div class="film-container">' +
+                        '<img class="film-poster" src="' + session.film.posterUrl + '">' +
+                        '<p class="film-title">' + session.film.title + '(' + session.film.ageRestrictions + '+)</p>' +
+                        '</div>';
+
+                    var fromTd = rowTr.insertCell(3);
+                    fromTd.innerHTML = session.sessionDateTimeFrom;
+
+                    var toTd = rowTr.insertCell(4);
+                    toTd.innerHTML = session.sessionDateTimeTo;
+
+                    var costTd = rowTr.insertCell(5);
+                    costTd.innerHTML = session.ticketCost;
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            $('#search').on('keyup', function () {
+                var title = $(this).val();
+
+                if (prevValue !== title) {
+                    search(title);
+                    prevValue = title;
+                }
+            });
+        });
+    </script>
 </head>
 <style>
     body {
-        height: 100vh;
+        height: 100%;
+        width: 100%;
         font-family: Verdana, sans-serif;
         margin: 0;
     }
@@ -46,6 +117,7 @@
     }
     select {
         height: 35px;
+        max-height: 100px;
         width: 100%;
     }
     textarea {
@@ -60,10 +132,6 @@
     textarea:focus {
         background-color: #ddd;
         outline: none;
-    }
-    hr {
-        border: 1px solid #f1f1f1;
-        margin-bottom: 25px;
     }
     .createbtn {
         background-color: #5237d5;
@@ -80,10 +148,22 @@
         cursor: pointer;
     }
 
-    .sessions-list {
+    .session-search {
         width: calc(100% - 300px);
+        height: 100%;
         display: flex;
         flex-direction: column;
+    }
+    .search-form {
+        width: 100%;
+        margin-bottom: 20px;
+        position: relative;
+        height: 34px;
+    }
+    .sessions-list {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
     }
     .container-label {
         color: #5237d5;
@@ -97,12 +177,26 @@
         color: #ffffff;
         background-color: #5237d5;
     }
+    .film-poster {
+        width: 50px;
+        height: 50px;
+    }
+    .film-title {
+        margin: 0 0 0 5px;
+    }
+    .film-container {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+    }
     table {
+        width: 100%;
+        overflow-y: auto;
         font-size: 10pt;
         border-collapse: collapse;
     }
     hr {
-        height: 2px;
+        height: 3px;
         background-color: #5237d5;
         border: none;
         width: 100%;
@@ -113,12 +207,46 @@
         border: 1px solid #dddddd;
         text-align: center;
         padding: 7px;
+        height: 50px;
     }
     th {
         background-color: #dddddd;
+        height: 20px;
     }
     a {
         text-decoration: none;
+    }
+    .search-input, .search-input:focus {
+        display: block;
+        width: calc(100% - 4px);
+        height: 34px;
+        line-height: 34px;
+        padding: 0;
+        margin: 0;
+        border: 2px solid #5237d5;
+        outline: none;
+        overflow: hidden;
+        border-radius: 18px;
+        background-color: rgb(255, 255, 255);
+        text-indent: 15px;
+        font-size: 14px;
+        color: #222;
+    }
+    .search-input:hover, .search-input:focus {
+        border: 3px solid #5237d5;
+        width: calc(100% - 6px);
+        height: 32px;
+        line-height: 32px;
+    }
+    .searchbtn {
+        border: 0;
+        outline: 0;
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        background-color: white;
+        cursor: pointer;
+        color: #5237d5;
     }
 </style>
 <body>
@@ -130,7 +258,7 @@
     </div>
     <hr>
     <div class="container-content">
-        <div class="add-session-form">
+        <div class="add-session-form", id="session-list">
             <form action="/admin/panel/sessions" method="post">
                 <label for="film"><b style="font-size: 10pt">Movie</b></label>
                 <select autocomplete="off" name="filmId" id="film" required>
@@ -158,32 +286,38 @@
                 <button type="submit" class="createbtn" value="/admin/panel/sessions">Create session</button>
             </form>
         </div>
-        <div class="sessions-list">
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Hall</th>
-                    <th>Movie</th>
-                    <th>Session date, from</th>
-                    <th>Session date, to</th>
-                    <th>Ticket cost, RUB</th>
-                </tr>
-                <#list model["sessions"] as session>
+        <div class="session-search">
+            <div class="search-form">
+                <input autocomplete="off" class="search-input" type="text" name="filmName" id="search" placeholder="Enter movie title">
+                <button class="searchbtn" onclick="onClick()"><i class="material-icons">search</i></button>
+            </div>
+            <div class="sessions-list">
+                <table class="session-table" id="sessions-table">
                     <tr>
-                        <td>${session.id}</td>
-                        <td>${session.hall.id}</td>
-                        <td>
-                            <div style="display: flex; justify-content: left; align-items: center">
-                                <img style="width: 50px; height: 50px; cursor: pointer" src="${session.film.posterUrl}">
-                                <p style="margin: 0 0 0 5px;">${session.film.title} (${session.film.ageRestrictions}+)</p>
-                            </div>
-                        </td>
-                        <td>${session.sessionDateTimeFrom}</td>
-                        <td>${session.sessionDateTimeTo}</td>
-                        <td>${session.ticketCost}</td>
+                        <th>ID</th>
+                        <th>Hall</th>
+                        <th>Movie</th>
+                        <th>Session date, from</th>
+                        <th>Session date, to</th>
+                        <th>Ticket cost, RUB</th>
                     </tr>
-                </#list>
-            </table>
+                    <#list model["sessions"] as session>
+                        <tr>
+                            <td>${session.id}</td>
+                            <td>${session.hall.id}</td>
+                            <td>
+                                <div class="film-container">
+                                    <img class="film-poster" src="${session.film.posterUrl}">
+                                    <p class="film-title">${session.film.title} (${session.film.ageRestrictions}+)</p>
+                                </div>
+                            </td>
+                            <td>${(session.sessionDateTimeFrom).format('dd.MM.yyyy HH:mm')}</td>
+                            <td>${(session.sessionDateTimeTo).format('dd.MM.yyyy HH:mm')}</td>
+                            <td>${session.ticketCost}</td>
+                        </tr>
+                    </#list>
+                </table>
+            </div>
         </div>
     </div>
 </div>

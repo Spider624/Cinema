@@ -183,7 +183,8 @@ public class AdminService {
 			LocalDateTime from = session.getSessionDateTimeFrom();
 			LocalDateTime to = session.getSessionDateTimeTo();
 
-			if (sessionDateTimTo.isAfter(from) || sessionDateTimeFrom.isBefore(to)) {
+			if ((sessionDateTimeFrom.isBefore(from) && sessionDateTimeTo.isAfter(from))
+					|| (sessionDateTimeFrom.isBefore(to) && sessionDateTimeFrom.isAfter(to))) {
 				throw new CinemaRuntimeException(String.format("Hall already busy by '%s'",
 						session.getFilm().getTitle()),
 						HttpStatus.BAD_REQUEST.value());

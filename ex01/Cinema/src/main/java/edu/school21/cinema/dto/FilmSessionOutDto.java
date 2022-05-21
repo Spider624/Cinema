@@ -1,6 +1,8 @@
 package edu.school21.cinema.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.school21.cinema.models.FilmSession;
+import edu.school21.cinema.serialization.LocalDateTimeSerializer;
 import lombok.Value;
 
 import java.time.LocalDateTime;
@@ -15,8 +17,10 @@ public class FilmSessionOutDto {
 	/** Фильм */
 	FilmOutDto film;
 	/** Время показа, от */
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	LocalDateTime sessionDateTimeFrom;
 	/** Время показа, от */
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
 	LocalDateTime sessionDateTimeTo;
 	/** Стоимость билета */
 	Integer ticketCost;

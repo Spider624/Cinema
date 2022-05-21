@@ -2,6 +2,7 @@ package edu.school21.cinema.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @MappedSuperclass
 public abstract class AbstractModel {
 

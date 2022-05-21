@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Halls</title>
 </head>
 <style>
     body {
-        height: 100vh;
+        height: 100%;
+        width: 100%;
         font-family: Verdana, sans-serif;
         margin: 0;
     }
@@ -44,10 +45,6 @@
         background-color: #ddd;
         outline: none;
     }
-    hr {
-        border: 1px solid #f1f1f1;
-        margin-bottom: 25px;
-    }
     .createbtn {
         background-color: #5237d5;
         color: white;
@@ -81,11 +78,13 @@
         background-color: #5237d5;
     }
     table {
+        width: 100%;
+        overflow-y: auto;
         font-size: 10pt;
         border-collapse: collapse;
     }
     hr {
-        height: 2px;
+        height: 3px;
         background-color: #5237d5;
         border: none;
         width: 100%;

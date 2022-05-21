@@ -2,8 +2,10 @@ package edu.school21.cinema.controllers;
 
 import edu.school21.cinema.dto.FilmInDto;
 import edu.school21.cinema.dto.FilmSessionInDto;
+import edu.school21.cinema.dto.FilmSessionOutDto;
 import edu.school21.cinema.dto.HallInDto;
 import edu.school21.cinema.services.AdminService;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/panel")
@@ -68,6 +73,13 @@ public class AdminController {
 		model.addAttribute("films", adminService.getFilms());
 		model.addAttribute("halls", adminService.getHalls());
 		return "sessions";
+	}
+
+	@ResponseBody
+	@GetMapping("sessions/search")
+	public List<FilmSessionOutDto> searchSessions(@RequestParam(value = "filmName", required = false) @Nullable String filmTitle,
+												  @ModelAttribute("model") ModelMap model) {
+		return adminService.searchSessions(filmTitle);
 	}
 
 	@PostMapping("sessions")

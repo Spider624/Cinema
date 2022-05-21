@@ -174,7 +174,7 @@
                         <td>${session.hall.id}</td>
                         <td>
                             <div style="display: flex; justify-content: left; align-items: center">
-                                <img style="width: 50px; height: 50px; cursor: pointer" src="${session.film.posterUrl}">
+                                <img style="width: 50px; height: 50px;" src="${session.film.posterUrl}">
                                 <p style="margin: 0 0 0 5px;">${session.film.title} (${session.film.ageRestrictions}+)</p>
                             </div>
                         </td>

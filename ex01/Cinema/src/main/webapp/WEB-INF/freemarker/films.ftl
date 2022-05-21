@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <script>
     function triggerInput(filmId) {
         document.getElementById('inputFile' + filmId).click();
@@ -15,7 +15,8 @@
 </head>
 <style>
     body {
-        height: 100vh;
+        height: 100%;
+        width: 100%;
         font-family: Verdana, sans-serif;
         margin: 0;
     }
@@ -35,7 +36,7 @@
         justify-content: center;
     }
 
-    .add-session-form {
+    .add-film-form {
         width: 250px;
         margin-right: 50px;
         display: flex;
@@ -67,10 +68,6 @@
         background-color: #ddd;
         outline: none;
     }
-    hr {
-        border: 1px solid #f1f1f1;
-        margin-bottom: 25px;
-    }
     .createbtn {
         background-color: #5237d5;
         color: white;
@@ -86,7 +83,7 @@
         cursor: pointer;
     }
 
-    .sessions-list {
+    .films-list {
         width: calc(100% - 300px);
         display: flex;
         flex-direction: column;
@@ -104,11 +101,13 @@
         background-color: #5237d5;
     }
     table {
+        width: 100%;
+        overflow-y: auto;
         font-size: 10pt;
         border-collapse: collapse;
     }
     hr {
-        height: 2px;
+        height: 3px;
         background-color: #5237d5;
         border: none;
         width: 100%;
@@ -136,7 +135,7 @@
     </div>
     <hr>
     <div class="container-content">
-        <div class="add-session-form">
+        <div class="add-film-form">
             <form action="/admin/panel/films" method="post">
                 <label for="title"><b style="font-size: 10pt">Title</b></label>
                 <input autocomplete="off" type="text" placeholder="Enter title" name="title" id="title" maxlength="100" required>
@@ -152,7 +151,7 @@
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
             </form>
         </div>
-        <div class="sessions-list">
+        <div class="films-list">
             <table>
                 <tr>
                     <th>ID</th>

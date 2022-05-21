@@ -1,5 +1,6 @@
 package edu.school21.cinema.repositories;
 
+import edu.school21.cinema.models.Film;
 import edu.school21.cinema.models.FilmSession;
 import edu.school21.cinema.models.Hall;
 import org.springframework.stereotype.Repository;
@@ -35,6 +36,19 @@ public class FilmSessionRepositoryEntityManagerImpl implements FilmSessionReposi
 		return entityManager.createQuery(
 				"SELECT session FROM FilmSession session ORDER BY session.sessionDateTimeFrom ASC",
 						FilmSession.class)
+				.getResultList();
+	}
+
+	@Override
+	public List<FilmSession> findAllByFilmTitle(String title) {
+		System.out.println(title);
+
+		return entityManager.createQuery("SELECT session " +
+								"FROM FilmSession session JOIN session.film film " +
+								"WHERE LOWER(film.title) LIKE :pattern " +
+								"ORDER BY session.sessionDateTimeFrom ASC",
+						FilmSession.class)
+				.setParameter("pattern", "%" + title.toLowerCase() + "%")
 				.getResultList();
 	}
 }

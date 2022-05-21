@@ -12,14 +12,14 @@ import javax.servlet.ServletRegistration;
 public class WebAppInitializer implements WebApplicationInitializer {
 
 	@Override
-	public void onStartup(ServletContext container) {
+	public void onStartup(ServletContext servletContext) {
 		AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
 		rootContext.register(WebAppConfig.class);
-		rootContext.setServletContext(container);
+		rootContext.setServletContext(servletContext);
 
-		container.addListener(new ContextLoaderListener(rootContext));
+		servletContext.addListener(new ContextLoaderListener(rootContext));
 
-		ServletRegistration.Dynamic dispatcher = container.addServlet("dispatcher", new DispatcherServlet(rootContext));
+		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher", new DispatcherServlet(rootContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
 	}

@@ -9,4 +9,5 @@ public interface FilmSessionRepository {
 	List<FilmSession> findAllByHall(Hall hall);
 	void save(FilmSession filmSession);
 	List<FilmSession> findAll();
+	List<FilmSession> findAllByFilmTitle(String title);
 }

@@ -16,6 +16,7 @@ import edu.school21.cinema.repositories.FilmSessionRepository;
 import edu.school21.cinema.repositories.HallRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -175,15 +177,26 @@ public class AdminService {
 				.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
+	public List<FilmSessionOutDto> searchSessions(@Nullable String filmTitle) {
+		return Optional.ofNullable(filmTitle)
+				.map(filmSessionRepository::findAllByFilmTitle)
+				.orElseGet(() -> filmSessionRepository.findAllByFilmTitle(""))
+				.stream()
+				.map(FilmSessionOutDto::new)
+				.collect(Collectors.toList());
+	}
 
-	private void assertSessionTime(LocalDateTime sessionDateTimeFrom, LocalDateTime sessionDateTimTo, Hall hall) {
+
+	private void assertSessionTime(LocalDateTime sessionDateTimeFrom, LocalDateTime sessionDateTimeTo, Hall hall) {
 		List<FilmSession> filmSessions = filmSessionRepository.findAllByHall(hall);
 
 		for (FilmSession session : filmSessions) {
 			LocalDateTime from = session.getSessionDateTimeFrom();
 			LocalDateTime to = session.getSessionDateTimeTo();
 
-			if (sessionDateTimTo.isAfter(from) || sessionDateTimeFrom.isBefore(to)) {
+			if ((sessionDateTimeFrom.isBefore(from) && sessionDateTimeTo.isAfter(from))
+					|| (sessionDateTimeFrom.isBefore(to) && sessionDateTimeFrom.isAfter(to))) {
 				throw new CinemaRuntimeException(String.format("Hall already busy by '%s'",
 						session.getFilm().getTitle()),
 						HttpStatus.BAD_REQUEST.value());

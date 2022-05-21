@@ -23,7 +23,7 @@ public class Film extends AbstractModel{
 	public final static int DESCRIPTION_LENGTH = 1000;
 
 	/** Название */
-	@Column(nullable = false, length = TITLE_LENGTH)
+	@Column(nullable = false, length = TITLE_LENGTH, unique = true)
 	private String title;
 
 	/** Год выпуска */

@@ -35,7 +35,7 @@
         justify-content: center;
     }
 
-    .add-session-form {
+    .add-film-form {
         width: 250px;
         margin-right: 50px;
         display: flex;
@@ -86,7 +86,7 @@
         cursor: pointer;
     }
 
-    .sessions-list {
+    .films-list {
         width: calc(100% - 300px);
         display: flex;
         flex-direction: column;
@@ -136,7 +136,7 @@
     </div>
     <hr>
     <div class="container-content">
-        <div class="add-session-form">
+        <div class="add-film-form">
             <form action="/admin/panel/films" method="post">
                 <label for="title"><b style="font-size: 10pt">Title</b></label>
                 <input autocomplete="off" type="text" placeholder="Enter title" name="title" id="title" maxlength="100" required>
@@ -152,7 +152,7 @@
                 <button type="submit" class="createbtn" value="/admin/panel/films">Create film</button>
             </form>
         </div>
-        <div class="sessions-list">
+        <div class="films-list">
             <table>
                 <tr>
                     <th>ID</th>
