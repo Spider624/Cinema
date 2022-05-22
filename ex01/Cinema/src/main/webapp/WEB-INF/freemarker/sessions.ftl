@@ -16,13 +16,16 @@
 
         function search(title) {
             $.get("/admin/panel/sessions/search?filmName=" + title, function (data) {
-                console.log(title);
                 reDrawTable(data);
             });
         }
 
         function onClick() {
             search(document.getElementById('search').value);
+        }
+
+        function openSession(sessionId) {
+            window.open("/sessions/" + sessionId, "_self");
         }
 
         function reDrawTable(sessions) {
@@ -36,6 +39,9 @@
                 for (let i = 1; i < sessions.length + 1; ++i) {
                     var session = sessions[i - 1];
                     var rowTr = table.insertRow(i);
+                    rowTr.setAttribute('class', 'select-session');
+                    rowTr.setAttribute('id', 'select-session');
+                    rowTr.setAttribute('onclick', 'openSession(' + session.id + ')');
 
                     var idTd = rowTr.insertCell(0);
                     idTd.innerHTML = session.id;
@@ -46,7 +52,7 @@
                     var movieTd = rowTr.insertCell(2);
                     movieTd.innerHTML = '<div class="film-container">' +
                         '<img class="film-poster" src="' + session.film.posterUrl + '">' +
-                        '<p class="film-title">' + session.film.title + '(' + session.film.ageRestrictions + '+)</p>' +
+                        '<p class="film-title">' + session.film.title + ' (' + session.film.ageRestrictions + '+)</p>' +
                         '</div>';
 
                     var fromTd = rowTr.insertCell(3);
@@ -248,6 +254,10 @@
         cursor: pointer;
         color: #5237d5;
     }
+    .select-session:hover {
+        cursor: pointer;
+        background-color: #eeeeee;
+    }
 </style>
 <body>
 <div class="container">
@@ -302,7 +312,7 @@
                         <th>Ticket cost, RUB</th>
                     </tr>
                     <#list model["sessions"] as session>
-                        <tr>
+                        <tr class="select-session" id="select-session" onclick="openSession(${session.id})">
                             <td>${session.id}</td>
                             <td>${session.hall.id}</td>
                             <td>

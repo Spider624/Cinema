@@ -51,4 +51,11 @@ public class FilmSessionRepositoryEntityManagerImpl implements FilmSessionReposi
 				.setParameter("pattern", "%" + title.toLowerCase() + "%")
 				.getResultList();
 	}
+
+	@Override
+	public FilmSession findById(long id) {
+		return entityManager.createQuery("SELECT session FROM FilmSession session WHERE session.id = :id", FilmSession.class)
+				.setParameter("id", id)
+				.getSingleResult();
+	}
 }

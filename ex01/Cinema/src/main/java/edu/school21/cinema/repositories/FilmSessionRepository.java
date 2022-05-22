@@ -10,4 +10,5 @@ public interface FilmSessionRepository {
 	void save(FilmSession filmSession);
 	List<FilmSession> findAll();
 	List<FilmSession> findAllByFilmTitle(String title);
+	FilmSession findById(long id);
 }
