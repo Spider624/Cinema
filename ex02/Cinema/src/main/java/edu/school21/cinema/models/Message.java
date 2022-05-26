@@ -18,6 +18,11 @@ public class Message extends AbstractModel{
     @Column(nullable = false)
     LocalDateTime dateTimeCreate = LocalDateTime.now();
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "film_id", nullable = false)
+    Film film;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", nullable = false)
     User author;
