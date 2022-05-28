@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /** Controller for user interaction with Cinema */
@@ -40,6 +42,8 @@ public class UserController {
 	@GetMapping("films/{filmId}/chat")
 	public String getFilmChat(@PathVariable long filmId,
 							  @CookieValue(value = "userId", required = false) @Nullable long userId,
+							  HttpServletRequest request,
+							  HttpServletResponse response,
 							  @ModelAttribute("model") ModelMap model){
 		model.addAttribute("chat", userService.getFilmChat(userId, filmId));
 		return "film-chat";

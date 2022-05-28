@@ -8,4 +8,5 @@ import java.util.List;
 public class FilmChatOutDto {
     FilmOutDto film;
     List<MessageOutDto> messages;
+    List<AuthentificationOutDto> authentifications;
 }

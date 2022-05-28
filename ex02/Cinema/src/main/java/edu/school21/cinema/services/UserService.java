@@ -8,16 +8,26 @@ import edu.school21.cinema.models.Message;
 import edu.school21.cinema.models.User;
 import edu.school21.cinema.notification.ChatNotification;
 import edu.school21.cinema.repositories.FilmSessionRepository;
+import edu.school21.cinema.repositories.MessageRepositoryEntityManagerImp;
 import edu.school21.cinema.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+	Map<Long, List<AuthentificationOutDto>> authentificationByFilmId = new HashMap<>();
 
 	@Autowired
 	private FilmSessionRepository filmSessionRepository;
@@ -33,12 +43,20 @@ public class UserService {
 	}
 
 	@Transactional
-	public FilmChatOutDto getFilmChat(long userId, long filmId){
+	public FilmChatOutDto getFilmChat(long userId, long filmId, HttpServletRequest request, HttpServletResponse response){
 		Film film = filmRepository.findById(dto.getFilmId());
 		User user;
 		if (userId == null){
 			user = new User();
 			userRepository.save(user);
+			response.addCookie(new Cookie("userId", String.valueOf(user.getId())));
+
+			AuthentificationOutDto authentification = new AuthentificationOutDto(
+					request.getRemoteAddr(),
+					LocalDateTime.now(),
+					userId);
+			)
+			authentificationByFilmId.get(filmId).add(authentification);
 		} else {
 			user = userRepository.findById(dto.getAutorId()); // или юзерайди?
 			if (user == null){
@@ -48,11 +66,12 @@ public class UserService {
 		if (film == null) {
 			throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
 		}
+		MessageRepositoryEntityManagerImp messageRepository = new MessageRepositoryEntityManagerImp();
 		List<MessageOutDto> messages = messageRepository.findAllByFilm(film, 0, 20)
 				.stream()
 				.map(MessageOutDto::new)
 				.collect(Collectors.toList());
-		return new FilmChatOutDto(new FilmOutDto(film), messages);
+		return new FilmChatOutDto(new FilmOutDto(film), messages, authentificationByFilmId.get(filmId));
 
 	}
 
@@ -89,4 +108,7 @@ public class UserService {
 						dto.getFilmId()));
 	}
 
+	public List<MessageOutDto> getMessages(long filmId, long offset, long limit) {
+
+	}
 }
