@@ -55,7 +55,6 @@ public class UserService {
 					request.getRemoteAddr(),
 					LocalDateTime.now(),
 					userId);
-			)
 			authentificationByFilmId.get(filmId).add(authentification);
 		} else {
 			user = userRepository.findById(dto.getAutorId()); // или юзерайди?

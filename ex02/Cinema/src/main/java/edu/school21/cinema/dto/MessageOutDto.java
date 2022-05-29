@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 @Value
 public class MessageOutDto {
 
+    /** id  фильма */
     Long filmId;
 
     /** отправитель сообщения */
     Long authorId;
 
+    /** дата создания объекта сообщения */
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     LocalDateTime dateTimeCreate;
 
