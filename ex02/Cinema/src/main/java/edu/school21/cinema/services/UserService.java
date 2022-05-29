@@ -8,6 +8,7 @@ import edu.school21.cinema.models.Message;
 import edu.school21.cinema.models.User;
 import edu.school21.cinema.notification.ChatNotification;
 import edu.school21.cinema.repositories.*;
+import javafx.scene.canvas.GraphicsContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,7 @@ public class UserService {
 					userId);
 			authentificationByFilmId.get(filmId).add(authentification);
 		} else {
-			user = userRepository.findById(dto.getAutorId()); // или юзерайди?
+			user = userRepository.findUserById(dto.getAutorId()); // или юзерайди?
 			if (user == null){
 				throw new CinemaRuntimeException();
 			}
@@ -78,7 +79,7 @@ public class UserService {
 	@Transactional(readOnly = false)
 	public void sendMessage(MessageInDto dto){
 		// todo сохранить сообщение внутри userService.sendMessage - добавить в user.service class
-		User user = UserRepository.findById(dto.getAuthorId());
+		User user = UserRepository.findUserById(dto.getAuthorId());
 
 
 		Film film = filmRepository.findById(filmId);

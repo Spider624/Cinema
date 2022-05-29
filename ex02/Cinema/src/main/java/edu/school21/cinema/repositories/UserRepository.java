@@ -4,6 +4,6 @@ import edu.school21.cinema.models.User;
 
 public interface UserRepository {
     void save(User user);
-    User findById(long id);
+    User findUserById(long id);
 
 }

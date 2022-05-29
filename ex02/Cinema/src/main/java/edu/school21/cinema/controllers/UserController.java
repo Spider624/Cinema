@@ -8,6 +8,7 @@ import edu.school21.cinema.repositories.UserRepository;
 import edu.school21.cinema.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -54,10 +55,12 @@ public class UserController {
 
 
 
-	@MessageMapping("/films/chat/messages/send")
+	@MessageMapping("/{film_id}/chat/messages/send")
 	@SendTo("filmId")
-	//todo посмотреть как сделать в этих аннотациях присвоение {filmId}
+	@DestinationVariable("filmId")
+	//todo посмотреть как сделать в этих аннотациях присвоение {filmId} -@DestinationVariable is answer
 	public void sendMessage(@Payload MessageInDto dto) {
+		 dto.getFilmId();
 		userService.sendMessage(dto);
 
 
