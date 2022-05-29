@@ -16,9 +16,12 @@ public class MessageRepositoryEntityManagerImp implements MessageRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<MessageOutDto> findAllByFilm(Film film, Long offset, Long limit){
+    public List<Message> findAllByFilm(Film film, Long offset, Long limit){
         return entityManager
-                .createQuery("SELECT messageOutDto FROM messages OFFSET offset LIMIT limit ORDER BY film.id", Film.class)
+                .createQuery("SELECT message FROM Message OFFSET WHERE film_id =: film  LIMIT limit OFFSET offset ORDER BY dateTimeCreate DESK", Message.class)
+                .setParameter("film", film)
+                .setParameter("offset", offset)
+                .setParameter("limit", limit)
                 .getResultList();
     }
 

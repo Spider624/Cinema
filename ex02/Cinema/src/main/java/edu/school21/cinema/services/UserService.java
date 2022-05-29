@@ -7,9 +7,7 @@ import edu.school21.cinema.models.FilmSession;
 import edu.school21.cinema.models.Message;
 import edu.school21.cinema.models.User;
 import edu.school21.cinema.notification.ChatNotification;
-import edu.school21.cinema.repositories.FilmSessionRepository;
-import edu.school21.cinema.repositories.MessageRepositoryEntityManagerImp;
-import edu.school21.cinema.repositories.UserRepository;
+import edu.school21.cinema.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,8 +42,10 @@ public class UserService {
 
 	@Transactional
 	public FilmChatOutDto getFilmChat(long userId, long filmId, HttpServletRequest request, HttpServletResponse response){
-		Film film = filmRepository.findById(dto.getFilmId());
+		FilmRepository filmRepository = new FilmRepositoryEntityManagerImpl();
+		Film film = filmRepository.findById(filmId);
 		User user;
+		UserRepository userRepository = new User;
 		if (userId == null){
 			user = new User();
 			userRepository.save(user);
@@ -79,6 +79,7 @@ public class UserService {
 	public void sendMessage(MessageInDto dto){
 		// todo сохранить сообщение внутри userService.sendMessage - добавить в user.service class
 		User user = UserRepository.findById(dto.getAuthorId());
+
 
 		Film film = filmRepository.findById(filmId);
 		if (film == null) {

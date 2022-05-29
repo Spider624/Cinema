@@ -26,4 +26,5 @@ public class Message extends AbstractModel{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", nullable = false)
     User author;
+
 }
