@@ -30,9 +30,9 @@ public class MessageRepositoryEntityManagerImp implements MessageRepository {
     }
 
     @Override
-    public Message save(Message message){
+    public void save(Message message){
         entityManager.persist(message);
-        return message;
+       // return message;
     }
 
     @Override
