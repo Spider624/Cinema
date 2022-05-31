@@ -79,7 +79,7 @@ public class UserService {
 		} else {
 			user = userRepository.findUserById(userId); // или юзерайди?
 			if (user == null){
-				throw new CinemaRuntimeException();
+				throw new CinemaRuntimeException("User not found", HttpStatus.NOT_FOUND.value());
 			}
 		}
 		if (film == null) {
@@ -131,10 +131,8 @@ public class UserService {
 			throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
 		}
 
-
-		// todo посмотри в других контролерах выкидывает
 		if (user == null){
-			throw new CinemaRuntimeException();
+			throw new CinemaRuntimeException("User not found", HttpStatus.NOT_FOUND.value());
 		}
 		Message message = new Message();
 		message.setText(dto.getText());
@@ -143,7 +141,7 @@ public class UserService {
 
 		messageRepository.save();
 
-		messagingTemplate.CinvertAndSendToUser(
+		messagingTemplate.ConvertAndSendToUser(
 				dto.getFilmId(),
 				"/chat/messages",
 				new ChatNotification(
