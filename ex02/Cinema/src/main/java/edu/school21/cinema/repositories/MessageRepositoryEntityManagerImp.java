@@ -16,29 +16,17 @@ public class MessageRepositoryEntityManagerImp implements MessageRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Message> findAllByFilm(Film film, Long offset, Long limit){
+    public List<Message> findAllByFilm(Film film, Integer offset, Integer limit){
         return entityManager
-                .createQuery("SELECT message FROM Message OFFSET WHERE film_id =: film  LIMIT limit OFFSET offset ORDER BY dateTimeCreate DESK", Message.class)
+                .createQuery("SELECT mess FROM Message mess WHERE mess.film = :film ORDER BY mess.dateTimeCreate DESC", Message.class)
                 .setParameter("film", film)
-                .setParameter("offset", offset)
-                .setParameter("limit", limit)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
                 .getResultList();
-    }
-
-    public List<Message> filndAllMessagesByFilmId(long filmId){
-        return entityManager.createQuery("SELECT message FROM Message message WHERE message.id =: id", Message.class);
     }
 
     @Override
     public void save(Message message){
         entityManager.persist(message);
-       // return message;
-    }
-
-    @Override
-    public Message findMessageById(long id){
-        return entityManager.createQuery("SELECT message FROM Message message WHERE message.id =: id", Message.class)
-                .setParameter("id", id)
-                .getSingleResult();
     }
 }

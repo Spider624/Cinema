@@ -8,9 +8,7 @@ import java.util.List;
 
 public interface MessageRepository {
 
-    List<MessageOutDto> findAllByFilm(Film film, Long offset, Long limit);
+    List<Message> findAllByFilm(Film film, Integer offset, Integer limit);
 
     void save(Message message);
-
-    Message findMessageById(long id);
 }

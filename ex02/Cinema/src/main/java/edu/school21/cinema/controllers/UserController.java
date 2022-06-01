@@ -40,32 +40,21 @@ public class UserController {
 									   		@RequestParam("offset") long offset,
 											@RequestParam("limit") long limit){
 		return userService.getMessages(filmId, offset, limit);
-
 	}
 
 	@GetMapping("films/{filmId}/chat")
 	public String getFilmChat(@PathVariable long filmId,
-							  @CookieValue(value = "userId", required = false) @Nullable long userId,
 							  HttpServletRequest request,
 							  HttpServletResponse response,
 							  @ModelAttribute("model") ModelMap model){
-		model.addAttribute("chat", userService.getFilmChat(userId, filmId));
+		model.addAttribute("chat", userService.getFilmChat(filmId, request, response));
 		return "film-chat";
 	}
 
 
 
-	@MessageMapping("/{film_id}/chat/messages/send")
-	@SendTo("filmId")
-	@DestinationVariable("filmId")
-	//todo посмотреть как сделать в этих аннотациях присвоение {filmId} -@DestinationVariable is answer
-	public void sendMessage(@Payload MessageInDto dto) {
-		 dto.getFilmId();
-		userService.sendMessage(dto);
-
-
-
-
-
+	@MessageMapping("/{filmId}/chat/messages/send")
+	public void sendMessage(@DestinationVariable("filmId") long filmId, @Payload MessageInDto dto) {
+		userService.sendMessage(dto, filmId);
 	}
 }

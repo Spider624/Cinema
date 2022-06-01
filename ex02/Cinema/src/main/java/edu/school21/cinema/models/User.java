@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "user")
-public class User extends AbstractModel{
+@Table(name = "user_account")
+public class User extends AbstractModel {
 
     @Nullable
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

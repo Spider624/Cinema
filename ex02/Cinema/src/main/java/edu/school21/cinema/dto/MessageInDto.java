@@ -9,8 +9,4 @@ public class MessageInDto {
 
     /** отправитель сообщения */
     Long authorId;
-
-    /** id  фильма */
-    Long filmId;
-
 }
