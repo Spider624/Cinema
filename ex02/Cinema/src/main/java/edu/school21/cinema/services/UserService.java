@@ -21,6 +21,8 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -98,6 +100,38 @@ public class UserService {
                 .collect(Collectors.toList());
 
         return new FilmChatOutDto(new FilmOutDto(film), messages, authentificationByFilmId.get(filmId));
+    }
+
+    @Transactional(readOnly = true)
+    public void getUserAvatar(Long userId, HttpServletRequest request, HttpServletResponse response) {
+
+        User user = userRepository.findUserById(userId);
+        if (user == null) {
+            throw new CinemaRuntimeException("User not found", HttpStatus.NOT_FOUND.value());
+        }
+
+        FileInfo fileInfo;
+        String filePath;
+        if (user.getAvatarFile() != null) {
+            fileInfo = user.getAvatarFile();
+            filePath = UPLOAD_PATH + user.getId();
+        } else {
+            fileInfo = DEFAULT_AVATAR;
+            filePath = UPLOAD_PATH + DEFAULT_AVATAR.getName();
+        }
+
+        try (FileInputStream fis  = new FileInputStream(filePath)) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType(fileInfo.getType());
+            response.addHeader("Content-Disposition", String.format("filename=\"%s\"", fileInfo.getName()));
+
+            IOUtils.copy(fis, response.getOutputStream());
+        }
+        catch (FileNotFoundException e) {
+            throw new CinemaRuntimeException("Image not found", HttpStatus.NOT_FOUND.value(), e);
+        } catch (IOException e) {
+            throw new CinemaRuntimeException("Error during image reading", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
+        }
     }
 
     @Transactional

@@ -15,6 +15,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,8 +39,20 @@ public class UserController {
 	@GetMapping("films/{filmId}/messages")
 	public List<MessageOutDto> getMessages(	@PathVariable("filmId") long filmId,
 									   		@RequestParam("offset") long offset,
-											@RequestParam("limit") long limit){
+											@RequestParam("limit") long limit) {
 		return userService.getMessages(filmId, offset, limit);
+	}
+
+	@ResponseBody
+	@GetMapping("user/{userId}/avatar")
+	public void getUserAvatar(@PathVariable long userId, HttpServletRequest request, HttpServletResponse response) {
+		userService.getUserAvatar(userId, request, response);
+	}
+
+	@PostMapping("user/{userId}/avatar")
+	public String uploadFilmPoster(@PathVariable long userId, @RequestParam("image") MultipartFile image) {
+		userService.uploadUserAvatar(userId, image);
+		return "redirect:/admin/panel/films";
 	}
 
 	@GetMapping("films/{filmId}/chat")

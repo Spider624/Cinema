@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Table(name = "user_account")
 public class User extends AbstractModel {
 
+    /** Аватар пользователя */
     @Nullable
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "avatar_file_id", unique = true)
