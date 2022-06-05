@@ -47,4 +47,6 @@ public class Film extends AbstractModel{
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "poster_file_id", unique = true)
 	private FileInfo posterFile;
+
+
 }

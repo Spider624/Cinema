@@ -321,8 +321,8 @@
                                     <p class="film-title">${session.film.title} (${session.film.ageRestrictions}+)</p>
                                 </div>
                             </td>
-                            <td>${(session.sessionDateTimeFrom).format('dd.MM.yyyy HH:mm')}</td>
-                            <td>${(session.sessionDateTimeTo).format('dd.MM.yyyy HH:mm')}</td>
+                            <td>${(session.sessionDateTimeFrom).format('HH:mm dd.MM.yyyy')}</td>
+                            <td>${(session.sessionDateTimeTo).format('HH:mm dd.MM.yyyy')}</td>
                             <td>${session.ticketCost}</td>
                         </tr>
                     </#list>
