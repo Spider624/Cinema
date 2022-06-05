@@ -176,15 +176,15 @@ public class AdminService {
 	}
 
 
-	private void assertSessionTime(LocalDateTime sessionDateTimeFrom, LocalDateTime sessionDateTimTo, Hall hall) {
+	private void assertSessionTime(LocalDateTime sessionDateTimeFrom, LocalDateTime sessionDateTimeTo, Hall hall) {
 		List<FilmSession> filmSessions = filmSessionRepository.findAllByHall(hall);
 
 		for (FilmSession session : filmSessions) {
 			LocalDateTime from = session.getSessionDateTimeFrom();
 			LocalDateTime to = session.getSessionDateTimeTo();
 
-			if ((sessionDateTimeFrom.isBefore(from) && sessionDateTimeTo.isAfter(from))
-					|| (sessionDateTimeFrom.isBefore(to) && sessionDateTimeFrom.isAfter(to))) {
+			if ((sessionDateTimeFrom.isAfter(from) && sessionDateTimeFrom.isBefore(to))
+					|| (sessionDateTimeTo.isAfter(from) && sessionDateTimeTo.isBefore(to))) {
 				throw new CinemaRuntimeException(String.format("Hall already busy by '%s'",
 						session.getFilm().getTitle()),
 						HttpStatus.BAD_REQUEST.value());
