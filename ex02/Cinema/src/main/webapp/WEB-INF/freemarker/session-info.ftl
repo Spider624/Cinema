@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+<#global session=model["session"]>
 <head>
     <title>Session</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script>
+        function openChat() {
+            window.open("/films/${session.film.id}/chat", "_self");
+        }
+    </script>
 </head>
 <style>
     body {
@@ -94,7 +100,6 @@
 
 </style>
 <body>
-<#global session=model["session"]>
 <div class="container">
     <div style="display: flex; flex-direction: row" class="container-head">
         <a href="/admin/panel/halls" class="container-label">Halls</a>
@@ -118,6 +123,7 @@
                         <p class="label">Hall ID</p>
                         <p class="label">Seats count</p>
                         <p class="label">Session start</p>
+                        <p class="label">Chat</p>
                     </div>
                     <div class="info-value">
                         <p class="value">
@@ -133,6 +139,9 @@
                         <p class="value">${session.hall.id}</p>
                         <p class="value">${session.hall.seatsCount}</p>
                         <p class="value">${(session.sessionDateTimeFrom).format('dd.MM.yyyy HH:mm')}</p>
+                        <p class="value" onclick="openChat()">
+                            <i style="color: #5237d5; cursor: pointer" class="material-icons" id="chat">chat</i>
+                        </p>
                     </div>
                 </div>
             </div>

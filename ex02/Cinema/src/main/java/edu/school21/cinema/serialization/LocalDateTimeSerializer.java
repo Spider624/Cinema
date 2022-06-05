@@ -16,6 +16,6 @@ public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
 	@Override
 	public void serialize(LocalDateTime dateTime, JsonGenerator jGen, SerializerProvider serializerProvider) throws IOException {
-		jGen.writeString(dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+		jGen.writeString(dateTime.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")));
 	}
 }

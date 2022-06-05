@@ -41,8 +41,6 @@ public class FilmSessionRepositoryEntityManagerImpl implements FilmSessionReposi
 
 	@Override
 	public List<FilmSession> findAllByFilmTitle(String title) {
-		System.out.println(title);
-
 		return entityManager.createQuery("SELECT session " +
 								"FROM FilmSession session JOIN session.film film " +
 								"WHERE LOWER(film.title) LIKE :pattern " +

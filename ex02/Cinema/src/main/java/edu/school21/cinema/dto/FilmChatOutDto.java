@@ -6,7 +6,11 @@ import java.util.List;
 
 @Value
 public class FilmChatOutDto {
-    FilmOutDto film;
-    List<MessageOutDto> messages;
-    List<AuthentificationOutDto> authentifications;
+
+	/** Film */
+	FilmOutDto film;
+	/** Created user id */
+	Long userId;
+	/** First 20 messages */
+	List<MessageOutDto> messages;
 }

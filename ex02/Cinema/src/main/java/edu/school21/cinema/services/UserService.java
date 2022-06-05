@@ -1,50 +1,37 @@
 package edu.school21.cinema.services;
 
-import edu.school21.cinema.dto.*;
+import edu.school21.cinema.dto.FilmChatOutDto;
+import edu.school21.cinema.dto.FilmOutDto;
+import edu.school21.cinema.dto.FilmSessionOutDto;
+import edu.school21.cinema.dto.MessageInDto;
+import edu.school21.cinema.dto.MessageOutDto;
 import edu.school21.cinema.exceptions.CinemaRuntimeException;
-import edu.school21.cinema.models.*;
+import edu.school21.cinema.models.Film;
+import edu.school21.cinema.models.FilmSession;
+import edu.school21.cinema.models.Message;
+import edu.school21.cinema.models.User;
 import edu.school21.cinema.notification.ChatNotification;
-import edu.school21.cinema.repositories.*;
-import javafx.scene.canvas.GraphicsContext;
+import edu.school21.cinema.repositories.FilmRepository;
+import edu.school21.cinema.repositories.FilmSessionRepository;
+import edu.school21.cinema.repositories.MessageRepository;
+import edu.school21.cinema.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class UserService {
-
-    Map<Long, List<AuthentificationOutDto>> authentificationByFilmId = new HashMap<>();
-    private final static FileInfo DEFAULT_AVATAR;
-    private final static String UPLOAD_PATH = "src/main/resources/files/avatars/";
-
-    static {
-        DEFAULT_AVATAR = new FileInfo();
-        DEFAULT_AVATAR.setName("default-avatar.jpg");
-        DEFAULT_AVATAR.setType(MimeTypeUtils.IMAGE_JPEG_VALUE);
-    }
 
     @Autowired
     private FilmSessionRepository filmSessionRepository;
@@ -69,20 +56,14 @@ public class UserService {
     }
 
     @Transactional
-    public FilmChatOutDto getFilmChat(long filmId, HttpServletRequest request, HttpServletResponse response) {
+    public FilmChatOutDto getFilmChat(long filmId, @Nullable Long userId, HttpServletResponse response) {
 
-        Long userId = getUserId(request);
         User user;
         if (userId == null) {
             user = new User();
             userRepository.save(user);
-            response.addCookie(new Cookie("userId", String.valueOf(user.getId())));
 
-            AuthentificationOutDto authentification = new AuthentificationOutDto(
-                    request.getRemoteAddr(),
-                    LocalDateTime.now(),
-                    userId);
-            authentificationByFilmId.computeIfAbsent(filmId, k -> new ArrayList<>()).add(authentification);
+			response.addCookie(new Cookie("userId", String.valueOf(user.getId())));
         } else {
             user = userRepository.findUserById(userId);
             if (user == null) {
@@ -99,68 +80,12 @@ public class UserService {
                 .map(MessageOutDto::new)
                 .collect(Collectors.toList());
 
-        return new FilmChatOutDto(new FilmOutDto(film), messages, authentificationByFilmId.get(filmId));
-    }
+        Collections.reverse(messages);
 
-    @Transactional(readOnly = true)
-    public void getUserAvatar(Long userId, HttpServletRequest request, HttpServletResponse response) {
-
-        User user = userRepository.findUserById(userId);
-        if (user == null) {
-            throw new CinemaRuntimeException("User not found", HttpStatus.NOT_FOUND.value());
-        }
-
-        FileInfo fileInfo;
-        String filePath;
-        if (user.getAvatarFile() != null) {
-            fileInfo = user.getAvatarFile();
-            filePath = UPLOAD_PATH + user.getId();
-        } else {
-            fileInfo = DEFAULT_AVATAR;
-            filePath = UPLOAD_PATH + DEFAULT_AVATAR.getName();
-        }
-
-        try (FileInputStream fis  = new FileInputStream(filePath)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType(fileInfo.getType());
-            response.addHeader("Content-Disposition", String.format("filename=\"%s\"", fileInfo.getName()));
-
-            IOUtils.copy(fis, response.getOutputStream());
-        }
-        catch (FileNotFoundException e) {
-            throw new CinemaRuntimeException("Image not found", HttpStatus.NOT_FOUND.value(), e);
-        } catch (IOException e) {
-            throw new CinemaRuntimeException("Error during image reading", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
-        }
+        return new FilmChatOutDto(new FilmOutDto(film), user.getId(), messages);
     }
 
     @Transactional
-    public void uploadUserAvatar(long usetId, MultipartFile image) {
-        User user = userRepository.findUserById(usetId);
-        if (user == null) {
-            throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
-        }
-
-        try (FileOutputStream fos = new FileOutputStream(UPLOAD_PATH + usetId)) {
-            IOUtils.copy(image.getInputStream(), fos);
-
-            FileInfo fileInfo = user.getAvatarFile();
-            if (fileInfo == null) {
-                fileInfo = new FileInfo();
-                user.setAvatarFile(fileInfo);
-            }
-
-            fileInfo.setSize(image.getSize());
-            fileInfo.setType(image.getContentType());
-            fileInfo.setName(image.getOriginalFilename());
-            userRepository.save(user);
-
-        } catch (IOException e) {
-            throw new CinemaRuntimeException("Error during image upload", HttpStatus.INTERNAL_SERVER_ERROR.value(), e);
-        }
-    }
-
-    @Transactional(readOnly = false)
     public void sendMessage(MessageInDto dto, long filmId) {
         User user = userRepository.findUserById(dto.getAuthorId());
 		if (user == null) {
@@ -180,7 +105,7 @@ public class UserService {
 
         simpMessagingTemplate.convertAndSendToUser(
                 String.valueOf(filmId),
-                "/new-message",
+                "/chat/messages",
                 new ChatNotification(
                         dto.getText(),
                         dto.getAuthorId(),
@@ -188,16 +113,14 @@ public class UserService {
                         filmId));
     }
 
-    public List<MessageOutDto> getMessages(long filmId, long offset, long limit) {
-        return new ArrayList<>();
-    }
-
-    @Nullable
-    private Long getUserId(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, "userId");
-        if (cookie != null) {
-            return Long.valueOf(cookie.getValue());
+    public List<MessageOutDto> getMessages(long filmId, int offset, int limit) {
+        Film film = filmRepository.findById(filmId);
+        if (film == null) {
+            throw new CinemaRuntimeException("Film not found", HttpStatus.NOT_FOUND.value());
         }
-        return null;
+
+        return messageRepository.findAllByFilm(film, offset, limit).stream()
+                .map(MessageOutDto::new)
+                .collect(Collectors.toList());
     }
 }

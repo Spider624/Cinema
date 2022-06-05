@@ -1,6 +1,5 @@
 package edu.school21.cinema.repositories;
 
-import edu.school21.cinema.dto.MessageOutDto;
 import edu.school21.cinema.models.Film;
 import edu.school21.cinema.models.Message;
 import org.springframework.stereotype.Repository;

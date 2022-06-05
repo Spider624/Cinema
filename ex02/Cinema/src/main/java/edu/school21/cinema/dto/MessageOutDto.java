@@ -1,6 +1,8 @@
 package edu.school21.cinema.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.school21.cinema.models.Message;
+import edu.school21.cinema.serialization.LocalDateTimeSerializer;
 import lombok.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,14 +13,11 @@ public class MessageOutDto {
 
     /** id  фильма */
     Long filmId;
-
     /** отправитель сообщения */
     Long authorId;
-
     /** дата создания объекта сообщения */
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime dateTimeCreate;
-
     /** текст сообщения */
     String text;
 

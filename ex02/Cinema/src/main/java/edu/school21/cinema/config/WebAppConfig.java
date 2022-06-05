@@ -63,7 +63,6 @@ public class WebAppConfig implements WebMvcConfigurer {
 				.build();
 	}
 
-
 	@Configuration
 	public static class FreeMarkerObjectWrapperConfig implements BeanPostProcessor {
 
