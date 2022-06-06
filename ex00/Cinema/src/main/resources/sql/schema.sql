@@ -1,4 +1,4 @@
-create table file_info
+create table if not exists file_info
 (
     id   bigserial  primary key,
     uuid uuid         not null  constraint uk_7xq0aoih3mc8441slevo9s8al unique,
@@ -7,14 +7,14 @@ create table file_info
     type varchar(255) not null
 );
 
-create table hall
+create table if not exists hall
 (
     id         bigserial    primary key,
     uuid       uuid    not null constraint uk_b96da937q4c6q385q3gxyhh5x unique,
     seatscount integer not null
 );
 
-create table film
+create table if not exists film
 (
     id              bigserial   primary key,
     uuid            uuid         not null   constraint uk_h3a96js8q2yif6cf2669p24ib unique,
@@ -26,7 +26,7 @@ create table film
     poster_file_id  bigint  constraint uk_h5qsf2twxj0cpwijuaspint1i unique  constraint fktaf5txt1afv7xf216satf3tc7  references file_info
 );
 
-create table film_session
+create table if not exists film_session
 (
     id                  bigserial   primary key,
     uuid                uuid      not null  constraint uk_k89fhtt5xh77mk0eropnghklu unique,
